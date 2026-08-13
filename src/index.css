@@ -1,0 +1,199 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --ink: #1a1612;
+  --paper: #fffaf2;
+  --raised: #f3e8d8;
+  --line: #e0d2bd;
+  --copper: #c56a2d;
+  --cream: #1a1612;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: #f3ece1;
+  color: var(--cream);
+  font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: 'ss01' on, 'cv11' on;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+::selection {
+  background: rgba(197, 106, 45, 0.28);
+  color: #1a1612;
+}
+
+.site-bg {
+  background-color: #f3ece1;
+  background-image:
+    radial-gradient(ellipse 70% 46% at 8% -8%, rgba(197, 106, 45, 0.12), transparent 55%),
+    radial-gradient(ellipse 36% 28% at 96% 4%, rgba(61, 107, 86, 0.07), transparent 60%),
+    radial-gradient(circle at 1px 1px, rgba(26, 22, 18, 0.06) 1px, transparent 0);
+  background-size: auto, auto, 22px 22px;
+}
+
+.grain {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.hairline {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+.stream-caret {
+  display: inline-block;
+  width: 0.42em;
+  height: 0.95em;
+  margin-left: 1px;
+  background: #c56a2d;
+  transform: translateY(2px);
+  animation: caret 1s steps(1) infinite;
+}
+
+.spark-fill {
+  stroke-dasharray: 240;
+  stroke-dashoffset: 240;
+  animation: spark-draw 1.4s ease forwards;
+}
+
+@keyframes spark-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.shimmer-bar {
+  background-image: linear-gradient(
+    90deg,
+    transparent,
+    rgba(197, 106, 45, 0.22),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s linear infinite;
+}
+
+.rise {
+  animation: rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.rise-1 { animation-delay: 0.06s; }
+.rise-2 { animation-delay: 0.14s; }
+.rise-3 { animation-delay: 0.24s; }
+.rise-4 { animation-delay: 0.36s; }
+.rise-5 { animation-delay: 0.5s; }
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.filament-draw {
+  stroke-dasharray: 1400;
+  stroke-dashoffset: 1400;
+  animation: filament-draw 2.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes filament-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.crop-tick {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+  color: #c56a2d;
+}
+
+.crop-tick.tl { top: -7px; left: -7px; border-top: 1px solid currentColor; border-left: 1px solid currentColor; }
+.crop-tick.tr { top: -7px; right: -7px; border-top: 1px solid currentColor; border-right: 1px solid currentColor; }
+.crop-tick.bl { bottom: -7px; left: -7px; border-bottom: 1px solid currentColor; border-left: 1px solid currentColor; }
+.crop-tick.br { bottom: -7px; right: -7px; border-bottom: 1px solid currentColor; border-right: 1px solid currentColor; }
+
+.signal-bar {
+  width: 2px;
+  background: #c56a2d;
+  transform-origin: bottom;
+  animation: signal 1s ease-in-out infinite;
+}
+
+@keyframes signal {
+  0%, 100% { transform: scaleY(0.35); }
+  50% { transform: scaleY(1); }
+}
+
+.ghost-num {
+  font-family: Fraunces, ui-serif, Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 0.7;
+  letter-spacing: -0.06em;
+  color: rgba(197, 106, 45, 0.1);
+  user-select: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .stream-caret,
+  .shimmer-bar,
+  .spark-fill,
+  .filament-draw,
+  .rise,
+  .signal-bar,
+  .animate-filament-pulse,
+  .animate-caret,
+  .animate-shimmer {
+    animation: none !important;
+  }
+
+  .rise {
+    opacity: 1;
+    transform: none;
+  }
+}
