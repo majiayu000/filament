@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import { ApprovalCard } from '@/components/approval-card'
 import { CostPanel } from '@/components/cost-panel'
 import { IconPause, IconPlay } from '@/components/icons'
@@ -34,6 +35,21 @@ export function AgentRun({
 }: AgentRunProps) {
   const visibleTools = snapshot.tools.filter((tool) => tool.status !== 'queued')
   const featured = [...visibleTools].reverse().find(Boolean)
+  const derivedOpen = snapshot.thinkingOpen || snapshot.elapsedMs < 5000
+  const [thinkingOverride, setThinkingOverride] = useState<boolean | null>(null)
+  const previousElapsedRef = useRef(snapshot.elapsedMs)
+
+  useEffect(() => {
+    if (snapshot.elapsedMs < previousElapsedRef.current) {
+      setThinkingOverride(null)
+    }
+    previousElapsedRef.current = snapshot.elapsedMs
+  }, [snapshot.elapsedMs])
+
+  const handleReplay = () => {
+    setThinkingOverride(null)
+    onReplay()
+  }
 
   return (
     <section className={cn('border border-line bg-paper shadow-panel', className)}>
@@ -60,7 +76,7 @@ export function AgentRun({
             {playing ? <IconPause className="h-3 w-3" /> : <IconPlay className="h-3 w-3" />}
             {playing ? 'Pause' : 'Resume'}
           </button>
-          <ReplayButton onClick={onReplay} size="sm" />
+          <ReplayButton onClick={handleReplay} size="sm" />
         </span>
       </header>
 
@@ -69,7 +85,8 @@ export function AgentRun({
           <ThinkingTrace
             steps={snapshot.thoughts}
             elapsedMs={Math.min(snapshot.elapsedMs, 4200)}
-            open={snapshot.thinkingOpen || snapshot.elapsedMs < 5000}
+            open={thinkingOverride ?? derivedOpen}
+            onOpenChange={setThinkingOverride}
           />
           {visibleTools.length > 0 ? <ToolCallRow tools={visibleTools} /> : null}
           {featured ? <ToolCallCard tool={featured} /> : null}

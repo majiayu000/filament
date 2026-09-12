@@ -10,6 +10,7 @@ type ThinkingTraceProps = {
   elapsedMs?: number
   defaultOpen?: boolean
   open?: boolean
+  onOpenChange?: (open: boolean) => void
   className?: string
 }
 
@@ -19,15 +20,23 @@ export function ThinkingTrace({
   elapsedMs,
   defaultOpen = true,
   open,
+  onOpenChange,
   className,
 }: ThinkingTraceProps) {
   const [internalOpen, setInternalOpen] = useState(defaultOpen)
-  const expanded = open ?? internalOpen
+  const controlled = open !== undefined
+  const expanded = controlled ? open : internalOpen
   const doneCount = steps.filter((step) => step.status === 'done').length
   const active = steps.find((step) => step.status === 'active')
   const total = elapsedMs ?? steps.reduce((sum, step) => sum + (step.ms ?? 0), 0)
   const progress =
     (doneCount + (active ? 0.55 : 0)) / Math.max(steps.length, 1)
+
+  const toggleOpen = () => {
+    const next = !expanded
+    if (!controlled) setInternalOpen(next)
+    onOpenChange?.(next)
+  }
 
   return (
     <section
@@ -38,7 +47,7 @@ export function ThinkingTrace({
     >
       <button
         type="button"
-        onClick={() => setInternalOpen((value) => !value)}
+        onClick={toggleOpen}
         className="flex w-full items-center gap-3 px-3.5 py-2.5 text-left"
         aria-expanded={expanded}
       >

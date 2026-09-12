@@ -46,6 +46,7 @@ function Frame({
 export function ComponentWall() {
   const snapshot = WALL
   const [decision, setDecision] = useState<ApprovalDecision>('pending')
+  const [thinkingOpen, setThinkingOpen] = useState(true)
   return (
     <section id="kit" className="relative mx-auto max-w-6xl scroll-mt-28 px-5 pb-24">
       <div className="mb-10 flex items-end justify-between gap-4">
@@ -67,7 +68,12 @@ export function ComponentWall() {
 
       <div className="grid gap-5 md:grid-cols-12">
         <Frame index="01" title="Thinking" snippet={USAGE.thinking} className="md:col-span-7">
-          <ThinkingTrace steps={snapshot.thoughts} elapsedMs={2860} open />
+          <ThinkingTrace
+            steps={snapshot.thoughts}
+            elapsedMs={2860}
+            open={thinkingOpen}
+            onOpenChange={setThinkingOpen}
+          />
         </Frame>
         <Frame index="06" title="Cost" snippet={USAGE.cost} className="md:col-span-5">
           <CostPanel snapshot={snapshot.cost} live={snapshot.live} />
