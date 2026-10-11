@@ -32,4 +32,25 @@ Copy [src/lib/cn.ts](src/lib/cn.ts) and [src/types.ts](src/types.ts), plus the c
 - Include the relevant rules from [src/index.css](src/index.css): `.stream-caret` for `StreamingText`, `.shimmer-bar` for a running `ToolCallCard`, and `.tabular` for `TaskProgress`/`CostPanel`, along with their reduced-motion overrides. Make the referenced `caret` and `shimmer` keyframes available in the output CSS, either as explicit CSS keyframes using the definitions in the Tailwind config or through the matching generated animation utilities. Component files do not import this stylesheet.
 - To match the typography, load Fraunces, IBM Plex Sans, and IBM Plex Mono as shown in [index.html](index.html), or choose your own fonts and inherited body typography. The page background, grain, root/body layout, and other showcase decoration can stay in the demo.
 
-Supply the snippet variables (`steps`, `tools`, `answer`, `citations`, `approval`, `decision`/`setDecision`, `nodes`, and `cost`) from your app. The fixtures in `src/data/script.ts`, `src/showcase/`, `AgentRun`, `ReplayButton`, `run-player.ts`, and `use-run.ts` drive the showcase and are outside these components' import closure. Your app owns real tool execution, streaming updates, and approval handling.
+Supply the snippet variables (`steps`, `tools`, `answer`, `citations`, `marks`, `approval`, `decision`/`setDecision`, `nodes`, and `cost`) from your app. The fixtures in `src/data/script.ts`, `src/showcase/`, `AgentRun`, `ReplayButton`, `run-player.ts`, and `use-run.ts` drive the showcase and are outside these components' import closure. Your app owns real tool execution, streaming updates, and approval handling.
+
+`StreamingText` needs `marks` to place citation buttons; supplying `citations` alone displays only the text. Each mark has an `id` matching a citation and an `after` offset into `text`, measured in UTF-16 code units (the offsets used by `text.slice`). Keep marks ordered by `after`. During streaming, a mark appears when `text.length` reaches its offset. `CiteMark` is exported from the component file, while `Citation` comes from `types.ts`:
+
+```tsx
+import { StreamingText, type CiteMark } from '@/components/streaming-text'
+import type { Citation } from '@/types'
+
+const answer = 'Checkout recovered.'
+const citations: Citation[] = [{
+  id: 'c1',
+  index: 1,
+  title: 'Checkout status',
+  source: 'Your app status feed',
+  snippet: 'Checkout requests are succeeding.',
+}]
+const marks: CiteMark[] = [{ after: answer.length, id: 'c1' }]
+
+export function AnswerWithCitation() {
+  return <StreamingText text={answer} citations={citations} marks={marks} />
+}
+```
