@@ -123,6 +123,7 @@ export const USAGE = {
   stream: `<StreamingText
   text={answer}
   citations={citations}
+  marks={marks}
   streaming
 />`,
   approval: `<ApprovalCard
